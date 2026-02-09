@@ -62,7 +62,29 @@ LibWaylandClientExports *LibWaylandClient::loadExports()
 		return LibWaylandClientExports(libwl);
 	}();
 
-	return exports.wl_display_dispatch ? &exports : nullptr;
+  	auto allExportsPresent = [](const LibWaylandClientExports &e) -> bool {
+  	  return
+  	    e.wl_display_dispatch &&
+  	    e.wl_display_get_registry &&
+  	    e.wl_display_roundtrip &&
+  	    e.wl_display_sync &&
+
+      	e.wl_registry_add_listener &&
+      	e.wl_registry_bind &&
+
+      	e.wl_buffer_destroy &&
+      	e.wl_shm_create_pool &&
+      	e.wl_shm_pool_create_buffer &&
+      	e.wl_shm_pool_destroy &&
+
+      	e.wl_surface_attach &&
+      	e.wl_surface_damage &&
+      	e.wl_surface_commit &&
+
+  	    e.wl_shm_interface;
+  	};
+
+	return allExportsPresent(exports) ? &exports : nullptr;
 }
 
 LibWaylandClient libWaylandClient;
